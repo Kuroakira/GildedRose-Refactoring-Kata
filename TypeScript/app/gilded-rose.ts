@@ -37,6 +37,30 @@ class BackstagePasses extends Item {
   }
 }
 
+class AgedBrie extends Item {
+  constructor(sellIn: number, quality: number) {
+    super("Aged Brie", sellIn, quality);
+  }
+  update() {
+    if (this.quality < 50) {
+      this.quality = this.quality + 1;
+    }
+    this.sellIn = this.sellIn - 1;
+
+    if (this.sellIn >= 0) {
+      return;
+    }
+
+    if (this.quality < 50) {
+      this.quality = this.quality + 1;
+    }
+  }
+  static isAgedBrie(name: string): name is "Aged Brie" {
+    return name === SpecificItemNames.AGED_BRIE;
+  }
+}
+
+
 const SpecificItemNames = {
   AGED_BRIE: 'Aged Brie',
   BACKSTAGE_PASSES: 'Backstage passes to a TAFKAL80ETC concert',
@@ -64,6 +88,14 @@ export class GildedRose {
         continue;
       }
 
+      if (AgedBrie.isAgedBrie(itemName)) {
+        const agedBrie = new AgedBrie(this.items[i].sellIn, this.items[i].quality);
+        agedBrie.update();
+        this.items[i].quality = agedBrie.quality;
+        this.items[i].sellIn = agedBrie.sellIn;
+        continue;
+      }
+
       if (
         SPECIFIC_ITEMS.includes(itemName) &&
         this.items[i].quality < 50
@@ -83,13 +115,6 @@ export class GildedRose {
       }
 
       if (this.items[i].sellIn >= 0) {
-        continue;
-      }
-
-      if (itemName === SpecificItemNames.AGED_BRIE) {
-        if (this.items[i].quality < 50) {
-          this.items[i].quality = this.items[i].quality + 1
-        }
         continue;
       }
 
