@@ -60,6 +60,21 @@ class AgedBrie extends Item {
   }
 }
 
+class Sulfuras extends Item {
+  constructor(sellIn: number, quality: number) {
+    super("Sulfuras, Hand of Ragnaros", sellIn, quality);
+  }
+  update() {
+    if (this.quality < 50) {
+      this.quality = this.quality + 1;
+    }
+    return;
+  }
+  static isSulfuras(name: string): name is "Sulfuras, Hand of Ragnaros" {
+    return name === SpecificItemNames.SULFURAS;
+  }
+}
+
 
 const SpecificItemNames = {
   AGED_BRIE: 'Aged Brie',
@@ -96,11 +111,12 @@ export class GildedRose {
         continue;
       }
 
-      if (
-        SPECIFIC_ITEMS.includes(itemName) &&
-        this.items[i].quality < 50
-      ) {
-        this.items[i].quality = this.items[i].quality + 1;
+      if (Sulfuras.isSulfuras(itemName)) {
+        const sulfuras = new Sulfuras(this.items[i].sellIn, this.items[i].quality);
+        sulfuras.update();
+        this.items[i].quality = sulfuras.quality;
+        this.items[i].sellIn = sulfuras.sellIn;
+        continue;
       }
 
       if (
