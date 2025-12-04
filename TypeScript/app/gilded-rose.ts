@@ -38,14 +38,18 @@ export class GildedRose {
 
       if (
         this.items[i].name === SpecificItemNames.BACKSTAGE_PASSES &&
-        this.items[i].quality < 50
+        this.items[i].quality < 50 &&
+        this.items[i].sellIn < 11
       ) {
-        if (this.items[i].sellIn < 11) {
-          this.items[i].quality = this.items[i].quality + 1
-        }
-        if (this.items[i].sellIn < 6) {
-          this.items[i].quality = this.items[i].quality + 1
-        }
+        this.items[i].quality = this.items[i].quality + 1
+      }
+
+      if (
+        this.items[i].name === SpecificItemNames.BACKSTAGE_PASSES &&
+        this.items[i].quality < 50 &&
+        this.items[i].sellIn < 6
+      ) {
+        this.items[i].quality = this.items[i].quality + 1
       }
 
       if (
