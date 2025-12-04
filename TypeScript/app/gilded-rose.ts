@@ -34,6 +34,24 @@ class BackstagePasses extends Item {
   }
 }
 
+class NormalItem extends Item {
+  constructor(name: string, sellIn: number, quality: number) {
+    super(name, sellIn, quality);
+  }
+  update() {
+    if (this.quality > 0) {
+      this.quality = this.quality - 1;
+    }
+    this.sellIn = this.sellIn - 1;
+    if (this.sellIn >= 0) {
+      return;
+    }
+    if (this.quality > 0) {
+      this.quality = this.quality - 1;
+    }
+  }
+}
+
 class AgedBrie extends Item {
   constructor(sellIn: number, quality: number) {
     super("Aged Brie", sellIn, quality);
@@ -103,16 +121,10 @@ export class GildedRose {
           this.items[i].sellIn = sulfuras.sellIn;
           break;
         default:
-          if (this.items[i].quality > 0) {
-            this.items[i].quality = this.items[i].quality - 1;
-          }
-          this.items[i].sellIn = this.items[i].sellIn - 1;
-          if (this.items[i].sellIn >= 0) {
-            continue;
-          }
-          if (this.items[i].quality > 0) {
-            this.items[i].quality = this.items[i].quality - 1;
-          }
+          const normalItem = new NormalItem(itemName, this.items[i].sellIn, this.items[i].quality);
+          normalItem.update();
+          this.items[i].quality = normalItem.quality;
+          this.items[i].sellIn = normalItem.sellIn;
           break;
       }
     }
