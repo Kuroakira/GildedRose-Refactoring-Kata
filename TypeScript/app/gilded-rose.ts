@@ -117,15 +117,10 @@ export class GildedRose {
   }
 
   updateQuality() {
-    for (let i = 0; i < this.items.length; i++) {
-      const itemName = this.items[i].name;
-
-      const item = ItemFactory.createItem(itemName, this.items[i].sellIn, this.items[i].quality);
-      item.update();
-      this.items[i].quality = item.quality;
-      this.items[i].sellIn = item.sellIn;
-    }
-
-    return this.items;
+    return this.items.map(item => {
+      const itemToUpdate = ItemFactory.createItem(item.name, item.sellIn, item.quality);
+      itemToUpdate.update();
+      return itemToUpdate;
+    });
   }
 }
