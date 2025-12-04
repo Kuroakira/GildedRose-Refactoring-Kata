@@ -10,6 +10,14 @@ export class Item {
   }
 }
 
+const SpecificItemNames = {
+  AGED_BRIE: 'Aged Brie',
+  BACKSTAGE_PASSES: 'Backstage passes to a TAFKAL80ETC concert',
+  SULFURAS: 'Sulfuras, Hand of Ragnaros',
+}
+
+const SPECIFIC_ITEMS = Object.values(SpecificItemNames)
+
 export class GildedRose {
   items: Array<Item>;
 
@@ -17,45 +25,36 @@ export class GildedRose {
     this.items = items;
   }
 
-  private checkAgedBrie(name: string) {
-    return name == 'Aged Brie';
-  }
-
-  private checkBackstagePasses(name: string) {
-    return name == 'Backstage passes to a TAFKAL80ETC concert';
-  }
-
-  private checkSulfuras(name: string) {
-    return name == 'Sulfuras, Hand of Ragnaros';
-  }
-
   updateQuality() {
     for (let i = 0; i < this.items.length; i++) {
+      const itemName = this.items[i].name;
+
       if (
-        !this.checkAgedBrie(this.items[i].name) &&
-        !this.checkBackstagePasses(this.items[i].name) &&
-        !this.checkSulfuras(this.items[i].name) &&
-        this.items[i].quality > 0
+        SPECIFIC_ITEMS.includes(itemName) &&
+        this.items[i].quality < 50
       ) {
-        this.items[i].quality = this.items[i].quality - 1
-      } else {
-        if (this.items[i].quality < 50) {
-          this.items[i].quality = this.items[i].quality + 1
-          if (
-            this.checkBackstagePasses(this.items[i].name) &&
-            this.items[i].quality < 50
-          ) {
-            if (this.items[i].sellIn < 11) {
-              this.items[i].quality = this.items[i].quality + 1
-            }
-            if (this.items[i].sellIn < 6) {
-              this.items[i].quality = this.items[i].quality + 1
-            }
+        this.items[i].quality = this.items[i].quality + 1
+        if (
+          this.items[i].name === SpecificItemNames.BACKSTAGE_PASSES &&
+          this.items[i].quality < 50
+        ) {
+          if (this.items[i].sellIn < 11) {
+            this.items[i].quality = this.items[i].quality + 1
+          }
+          if (this.items[i].sellIn < 6) {
+            this.items[i].quality = this.items[i].quality + 1
           }
         }
       }
 
-      if (!this.checkSulfuras(this.items[i].name)) {
+      if (
+        !SPECIFIC_ITEMS.includes(itemName) &&
+        this.items[i].quality > 0
+      ) {
+        this.items[i].quality = this.items[i].quality - 1
+      }
+
+      if (itemName !== SpecificItemNames.SULFURAS) {
         this.items[i].sellIn = this.items[i].sellIn - 1;
       }
 
@@ -63,21 +62,21 @@ export class GildedRose {
         continue;
       }
 
-      if (this.checkAgedBrie(this.items[i].name)) {
+      if (itemName === SpecificItemNames.AGED_BRIE) {
         if (this.items[i].quality < 50) {
           this.items[i].quality = this.items[i].quality + 1
         }
         continue;
       }
 
-      if (this.checkBackstagePasses(this.items[i].name)) {
+      if (itemName === SpecificItemNames.BACKSTAGE_PASSES) {
         this.items[i].quality = this.items[i].quality - this.items[i].quality;
         continue;
       }
 
       if (
         this.items[i].quality > 0 &&
-        !this.checkSulfuras(this.items[i].name)
+        itemName !== SpecificItemNames.SULFURAS
       ) {
         this.items[i].quality = this.items[i].quality - 1
       }
