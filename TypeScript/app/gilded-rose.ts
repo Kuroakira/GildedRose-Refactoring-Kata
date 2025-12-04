@@ -3,10 +3,14 @@ export class Item {
   sellIn: number;
   quality: number;
 
-  constructor(name, sellIn, quality) {
+  constructor(name: string, sellIn: number, quality: number) {
     this.name = name;
     this.sellIn = sellIn;
     this.quality = quality;
+  }
+
+  update(): void {
+    throw new Error("Not implemented");
   }
 }
 
@@ -84,6 +88,21 @@ class Sulfuras extends Item {
   }
 }
 
+class ItemFactory {
+  static createItem(name: string, sellIn: number, quality: number): Item {
+    switch (name) {
+      case SpecificItemNames.AGED_BRIE:
+        return new AgedBrie(sellIn, quality);
+      case SpecificItemNames.BACKSTAGE_PASSES:
+        return new BackstagePasses(sellIn, quality);
+      case SpecificItemNames.SULFURAS:
+        return new Sulfuras(sellIn, quality);
+      default:
+        return new NormalItem(name, sellIn, quality);
+    }
+  }
+}
+
 const SpecificItemNames = {
   AGED_BRIE: 'Aged Brie',
   BACKSTAGE_PASSES: 'Backstage passes to a TAFKAL80ETC concert',
@@ -101,32 +120,10 @@ export class GildedRose {
     for (let i = 0; i < this.items.length; i++) {
       const itemName = this.items[i].name;
 
-      switch (itemName) {
-        case SpecificItemNames.BACKSTAGE_PASSES:
-          const backstagePasses = new BackstagePasses(this.items[i].sellIn, this.items[i].quality);
-          backstagePasses.update();
-          this.items[i].quality = backstagePasses.quality;
-          this.items[i].sellIn = backstagePasses.sellIn;
-          break;
-        case SpecificItemNames.AGED_BRIE:
-          const agedBrie = new AgedBrie(this.items[i].sellIn, this.items[i].quality);
-          agedBrie.update();
-          this.items[i].quality = agedBrie.quality;
-          this.items[i].sellIn = agedBrie.sellIn;
-          break;
-        case SpecificItemNames.SULFURAS:
-          const sulfuras = new Sulfuras(this.items[i].sellIn, this.items[i].quality);
-          sulfuras.update();
-          this.items[i].quality = sulfuras.quality;
-          this.items[i].sellIn = sulfuras.sellIn;
-          break;
-        default:
-          const normalItem = new NormalItem(itemName, this.items[i].sellIn, this.items[i].quality);
-          normalItem.update();
-          this.items[i].quality = normalItem.quality;
-          this.items[i].sellIn = normalItem.sellIn;
-          break;
-      }
+      const item = ItemFactory.createItem(itemName, this.items[i].sellIn, this.items[i].quality);
+      item.update();
+      this.items[i].quality = item.quality;
+      this.items[i].sellIn = item.sellIn;
     }
 
     return this.items;
