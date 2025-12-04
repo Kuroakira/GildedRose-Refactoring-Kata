@@ -31,10 +31,6 @@ class BackstagePasses extends Item {
     }
 
     this.quality = this.quality - this.quality;
-
-    if (this.quality > 0) {
-      this.quality = this.quality - 1;
-    }
   }
   static isBackstagePasses(name: string): name is "Backstage passes to a TAFKAL80ETC concert" {
     return name === SpecificItemNames.BACKSTAGE_PASSES;
