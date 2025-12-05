@@ -15,9 +15,6 @@ export class Item {
 }
 
 class BackstagePasses extends Item {
-  constructor(sellIn: number, quality: number) {
-    super("Backstage passes to a TAFKAL80ETC concert", sellIn, quality);
-  }
   update() {
     if (this.quality < 50) {
       this.quality = this.quality + 1;
@@ -39,9 +36,6 @@ class BackstagePasses extends Item {
 }
 
 class NormalItem extends Item {
-  constructor(name: string, sellIn: number, quality: number) {
-    super(name, sellIn, quality);
-  }
   update() {
     if (this.quality > 0) {
       this.quality = this.quality - 1;
@@ -57,9 +51,6 @@ class NormalItem extends Item {
 }
 
 class AgedBrie extends Item {
-  constructor(sellIn: number, quality: number) {
-    super("Aged Brie", sellIn, quality);
-  }
   update() {
     if (this.quality < 50) {
       this.quality = this.quality + 1;
@@ -77,9 +68,6 @@ class AgedBrie extends Item {
 }
 
 class Sulfuras extends Item {
-  constructor(sellIn: number, quality: number) {
-    super("Sulfuras, Hand of Ragnaros", sellIn, quality);
-  }
   update() {
     if (this.quality < 50) {
       this.quality = this.quality + 1;
@@ -92,11 +80,11 @@ class ItemFactory {
   static createItem(name: string, sellIn: number, quality: number): Item {
     switch (name) {
       case SpecificItemNames.AGED_BRIE:
-        return new AgedBrie(sellIn, quality);
+        return new AgedBrie(name, sellIn, quality);
       case SpecificItemNames.BACKSTAGE_PASSES:
-        return new BackstagePasses(sellIn, quality);
+        return new BackstagePasses(name, sellIn, quality);
       case SpecificItemNames.SULFURAS:
-        return new Sulfuras(sellIn, quality);
+        return new Sulfuras(name, sellIn, quality);
       default:
         return new NormalItem(name, sellIn, quality);
     }
@@ -117,7 +105,8 @@ export class GildedRose {
   }
 
   updateQuality() {
-
+    // The golden master test is using the original items array, so we need to keep the original array's references.
+    // If we create a new item, it will not be the same object as the original item, and the golden master test will fail.
     for (let i = 0; i < this.items.length; i++) {
       const item = ItemFactory.createItem(this.items[i].name, this.items[i].sellIn, this.items[i].quality);
       item.update();
