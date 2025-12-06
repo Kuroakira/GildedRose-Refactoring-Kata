@@ -54,9 +54,7 @@ class AgedBrie extends Item {
 
 class Sulfuras extends Item {
   update() {
-    if (this.quality < 50) {
-      this.quality = this.quality + 1;
-    }
+    // Sulfuras does not change
     return;
   }
 }
