@@ -92,16 +92,15 @@ export class GildedRose {
   private COMMON: typeof Item = NormalItem;
 
   constructor(items = [] as Array<Item>) {
-    this.items = items;
+    this.items = items.map(item => {
+      const Class = SPECIFIC_ITEMS[item.name] || this.COMMON;
+      return new Class(item.name, item.sellIn, item.quality);
+    });
   }
 
   updateQuality() {
     for (let i = 0; i < this.items.length; i++) {
-      const Class = SPECIFIC_ITEMS[this.items[i].name] || this.COMMON;
-      const item = new Class(this.items[i].name, this.items[i].sellIn, this.items[i].quality);
-      item.update();
-      this.items[i].quality = item.quality;
-      this.items[i].sellIn = item.sellIn;
+      this.items[i].update();
     }
 
     return this.items;
