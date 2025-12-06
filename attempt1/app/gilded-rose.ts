@@ -103,10 +103,10 @@ const SPECIFIC_ITEMS: { [key: string]: typeof Item } = Object.freeze({
   'Conjured Item': ConjuredItem,
 });
 export class GildedRose {
-  items: Array<Item>;
+  items: Item[];
   private COMMON: typeof Item = NormalItem;
 
-  constructor(items = [] as Array<Item>) {
+  constructor(items: Item[] = []) {
     this.items = items.map(item => {
       const Class = SPECIFIC_ITEMS[item.name] || this.COMMON;
       return new Class(item.name, item.sellIn, item.quality);
