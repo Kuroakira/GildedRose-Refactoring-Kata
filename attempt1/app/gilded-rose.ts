@@ -43,11 +43,13 @@ class NormalItem extends Item {
 }
 
 class Sulfuras extends Item {
+  MAX_QUALITY: number = 80;
+
   update() {
-    // do nothing
+    this.quality = this.MAX_QUALITY;
   }
   adjustMaxQuality(): void {
-    // do nothing
+    // do nothing, sulfuras has a fixed quality
   }
 }
 
