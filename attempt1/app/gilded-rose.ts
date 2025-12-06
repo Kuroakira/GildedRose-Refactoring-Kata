@@ -100,8 +100,6 @@ export class GildedRose {
   }
 
   updateQuality() {
-    // The golden master test is using the original items array, so we need to keep the original array's references.
-    // If we create a new item, it will not be the same object as the original item, and the golden master test will fail.
     for (let i = 0; i < this.items.length; i++) {
       this.items[i].update();
     }
