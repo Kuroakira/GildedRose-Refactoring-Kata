@@ -46,6 +46,9 @@ class Sulfuras extends Item {
   update() {
     // do nothing
   }
+  adjustMaxQuality(): void {
+    // do nothing
+  }
 }
 
 class BackstagePasses extends Item {
