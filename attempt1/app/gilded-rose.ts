@@ -46,6 +46,28 @@ class Sulfuras extends Item {
   }
 }
 
+class BackstagePasses extends Item {
+  update() {
+    this.quality = this.quality + 1
+
+    if (this.sellIn < 11) {
+      this.quality = this.quality + 1
+    }
+    if (this.sellIn < 6) {
+      this.quality = this.quality + 1
+    }
+
+    this.sellIn = this.sellIn - 1;
+
+    if (this.sellIn <= 0) {
+      this.quality = 0
+    }
+
+    this.adjustMaxQuality();
+    this.adjustMinQuality();
+  }
+}
+
 const SPECIFIC_ITEMS = Object.freeze({
   AGED_BRIE: 'Aged Brie',
   BACKSTAGE_PASSES: 'Backstage passes to a TAFKAL80ETC concert',
@@ -80,17 +102,16 @@ export class GildedRose {
         continue;
       }
 
-      this.items[i].quality = this.items[i].quality + 1
 
       if (this.items[i].name == SPECIFIC_ITEMS.BACKSTAGE_PASSES) {
-        // backstage passes
-        if (this.items[i].sellIn < 11) {
-          this.items[i].quality = this.items[i].quality + 1
-        }
-        if (this.items[i].sellIn < 6) {
-          this.items[i].quality = this.items[i].quality + 1
-        }
+        const backstagePasses = new BackstagePasses(this.items[i].name, this.items[i].sellIn, this.items[i].quality);
+        backstagePasses.update();
+        this.items[i].quality = backstagePasses.quality;
+        this.items[i].sellIn = backstagePasses.sellIn;
+        continue;
       }
+
+      this.items[i].quality = this.items[i].quality + 1
 
       this.items[i].sellIn = this.items[i].sellIn - 1;
 
@@ -98,9 +119,6 @@ export class GildedRose {
         switch (this.items[i].name) {
           case SPECIFIC_ITEMS.AGED_BRIE:
             this.items[i].quality = this.items[i].quality + 1;
-            break;
-          case SPECIFIC_ITEMS.BACKSTAGE_PASSES:
-            this.items[i].quality = 0;
             break;
           default:
             continue;
