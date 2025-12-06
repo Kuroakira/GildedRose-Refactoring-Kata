@@ -68,6 +68,20 @@ class BackstagePasses extends Item {
   }
 }
 
+class AgedBrie extends Item {
+  update() {
+    this.quality = this.quality + 1;
+    this.sellIn = this.sellIn - 1;
+
+    if (this.sellIn <= 0) {
+      this.quality = this.quality + 1;
+    }
+
+    this.adjustMaxQuality();
+    this.adjustMinQuality();
+  }
+}
+
 const SPECIFIC_ITEMS = Object.freeze({
   AGED_BRIE: 'Aged Brie',
   BACKSTAGE_PASSES: 'Backstage passes to a TAFKAL80ETC concert',
@@ -111,27 +125,12 @@ export class GildedRose {
         continue;
       }
 
-      this.items[i].quality = this.items[i].quality + 1
-
-      this.items[i].sellIn = this.items[i].sellIn - 1;
-
-      if (this.items[i].sellIn < 0) {
-        switch (this.items[i].name) {
-          case SPECIFIC_ITEMS.AGED_BRIE:
-            this.items[i].quality = this.items[i].quality + 1;
-            break;
-          default:
-            continue;
-            break;
-        }
-      }
-
-      // Ensure quality is within valid range
-      if (this.items[i].quality < 0) {
-        this.items[i].quality = 0;
-      }
-      if (this.items[i].quality > 50) {
-        this.items[i].quality = 50;
+      if (this.items[i].name == SPECIFIC_ITEMS.AGED_BRIE) {
+        const agedBrie = new AgedBrie(this.items[i].name, this.items[i].sellIn, this.items[i].quality);
+        agedBrie.update();
+        this.items[i].quality = agedBrie.quality;
+        this.items[i].sellIn = agedBrie.sellIn;
+        continue;
       }
     }
 
