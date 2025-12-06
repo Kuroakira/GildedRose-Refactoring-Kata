@@ -9,17 +9,8 @@ export class Item {
     this.quality = quality;
   }
 
-  update() {
-    if (this.quality > 0) {
-      this.quality = this.quality - 1;
-    }
-    this.sellIn = this.sellIn - 1;
-    if (this.sellIn >= 0) {
-      return;
-    }
-    if (this.quality > 0) {
-      this.quality = this.quality - 1;
-    }
+  update(): void {
+    throw new Error("Not implemented");
   }
 }
 
@@ -70,6 +61,21 @@ class Sulfuras extends Item {
   }
 }
 
+class NormalItem extends Item {
+  update() {
+    if (this.quality > 0) {
+      this.quality = this.quality - 1;
+    }
+    this.sellIn = this.sellIn - 1;
+    if (this.sellIn >= 0) {
+      return;
+    }
+    if (this.quality > 0) {
+      this.quality = this.quality - 1;
+    }
+  }
+}
+
 const SpecificItemNames = {
   AGED_BRIE: 'Aged Brie',
   BACKSTAGE_PASSES: 'Backstage passes to a TAFKAL80ETC concert',
@@ -83,7 +89,7 @@ const NameToClass: { [key: string]: typeof Item} = {
 };
 
 export class GildedRose {
-  private CommonClass: typeof Item = Item;
+  private CommonClass: typeof Item = NormalItem;
   items: Array<Item>;
 
   constructor(items = [] as Array<Item>) {
