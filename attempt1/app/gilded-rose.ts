@@ -8,6 +8,36 @@ export class Item {
     this.sellIn = sellIn;
     this.quality = quality;
   }
+
+  update() {
+    throw new Error('Not implemented');
+  }
+
+  adjustMaxQuality() {
+    if (this.quality > 50) {
+      this.quality = 50;
+    }
+  }
+
+  adjustMinQuality() {
+    if (this.quality < 0) {
+      this.quality = 0;
+    }
+  }
+}
+
+class NormalItem extends Item {
+  update() {
+    if (this.sellIn <= 0) {
+      this.quality = this.quality - 2;
+    } else {
+      this.quality = this.quality - 1;
+    }
+    this.sellIn = this.sellIn - 1;
+
+    this.adjustMaxQuality();
+    this.adjustMinQuality();
+  }
 }
 
 const SPECIFIC_ITEMS = Object.freeze({
@@ -15,6 +45,8 @@ const SPECIFIC_ITEMS = Object.freeze({
   BACKSTAGE_PASSES: 'Backstage passes to a TAFKAL80ETC concert',
   SULFURAS: 'Sulfuras, Hand of Ragnaros',
 });
+
+const SPECIFIC_ITEMS_ARRAY: string[] = Object.values(SPECIFIC_ITEMS);
 
 export class GildedRose {
   items: Array<Item>;
@@ -29,17 +61,24 @@ export class GildedRose {
         continue;
       }
 
-      if (this.items[i].name != SPECIFIC_ITEMS.AGED_BRIE && this.items[i].name != SPECIFIC_ITEMS.BACKSTAGE_PASSES) {
-        this.items[i].quality = this.items[i].quality - 1
-      } else {
-        this.items[i].quality = this.items[i].quality + 1
-        if (this.items[i].name == SPECIFIC_ITEMS.BACKSTAGE_PASSES) {
-          if (this.items[i].sellIn < 11) {
-            this.items[i].quality = this.items[i].quality + 1
-          }
-          if (this.items[i].sellIn < 6) {
-            this.items[i].quality = this.items[i].quality + 1
-          }
+      if (!SPECIFIC_ITEMS_ARRAY.includes(this.items[i].name)) {
+        // normal item
+        const normalItem = new NormalItem(this.items[i].name, this.items[i].sellIn, this.items[i].quality);
+        normalItem.update();
+        this.items[i].quality = normalItem.quality;
+        this.items[i].sellIn = normalItem.sellIn;
+        continue;
+      }
+
+      this.items[i].quality = this.items[i].quality + 1
+
+      if (this.items[i].name == SPECIFIC_ITEMS.BACKSTAGE_PASSES) {
+        // backstage passes
+        if (this.items[i].sellIn < 11) {
+          this.items[i].quality = this.items[i].quality + 1
+        }
+        if (this.items[i].sellIn < 6) {
+          this.items[i].quality = this.items[i].quality + 1
         }
       }
 
@@ -54,7 +93,7 @@ export class GildedRose {
             this.items[i].quality = 0;
             break;
           default:
-            this.items[i].quality = this.items[i].quality - 1;
+            continue;
             break;
         }
       }
