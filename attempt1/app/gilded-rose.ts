@@ -3,7 +3,7 @@ export class Item {
   sellIn: number;
   quality: number;
 
-  constructor(name, sellIn, quality) {
+  constructor(name: string, sellIn: number, quality: number) {
     this.name = name;
     this.sellIn = sellIn;
     this.quality = quality;
@@ -82,10 +82,25 @@ class AgedBrie extends Item {
   }
 }
 
+class ConjuredItem extends Item {
+  update() {
+    if (this.sellIn <= 0) {
+      this.quality = this.quality - 4;
+    } else {
+      this.quality = this.quality - 2;
+    }
+    this.sellIn = this.sellIn - 1;
+
+    this.adjustMaxQuality();
+    this.adjustMinQuality();
+  }
+}
+
 const SPECIFIC_ITEMS: { [key: string]: typeof Item } = Object.freeze({
   'Aged Brie': AgedBrie,
   'Backstage passes to a TAFKAL80ETC concert': BackstagePasses,
   'Sulfuras, Hand of Ragnaros': Sulfuras,
+  'Conjured Item': ConjuredItem,
 });
 export class GildedRose {
   items: Array<Item>;

@@ -2,7 +2,7 @@ import { Item, GildedRose } from '@/gilded-rose';
 
 describe('Gilded Rose', () => {
   describe('normal items', () => {
-    it('should foo', () => {
+    it('should decrease quality by 1 when sellIn is greater than 0', () => {
       const gildedRose = new GildedRose([new Item('normal item', 10, 20)]);
       const items = gildedRose.updateQuality();
       expect(items[0].name).toBe('normal item');
@@ -77,6 +77,29 @@ describe('Gilded Rose', () => {
       expect(items[0].name).toBe('Backstage passes to a TAFKAL80ETC concert');
       expect(items[0].sellIn).toBe(-1);
       expect(items[0].quality).toBe(0);
-    })
+    });
+  });
+  describe('Conjured items', () => {
+    it('should decrease quality by 2 when sellIn is greater than 0', () => {
+      const gildedRose = new GildedRose([new Item('Conjured Item', 10, 20)]);
+      const items = gildedRose.updateQuality();
+      expect(items[0].name).toBe('Conjured Item');
+      expect(items[0].sellIn).toBe(9);
+      expect(items[0].quality).toBe(18);
+    });
+    it('should decrease quality by 4 when sellIn is less than 0', () => {
+      const gildedRose = new GildedRose([new Item('Conjured Item', 0, 20)]);
+      const items = gildedRose.updateQuality();
+      expect(items[0].name).toBe('Conjured Item');
+      expect(items[0].sellIn).toBe(-1);
+      expect(items[0].quality).toBe(16);
+    });
+    it('should not decrease quality below 0', () => {
+      const gildedRose = new GildedRose([new Item('Conjured Item', 0, 0)]);
+      const items = gildedRose.updateQuality();
+      expect(items[0].name).toBe('Conjured Item');
+      expect(items[0].sellIn).toBe(-1);
+      expect(items[0].quality).toBe(0);
+    });
   });
 });
