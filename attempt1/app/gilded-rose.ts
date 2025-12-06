@@ -40,6 +40,12 @@ class NormalItem extends Item {
   }
 }
 
+class Sulfuras extends Item {
+  update() {
+    // do nothing
+  }
+}
+
 const SPECIFIC_ITEMS = Object.freeze({
   AGED_BRIE: 'Aged Brie',
   BACKSTAGE_PASSES: 'Backstage passes to a TAFKAL80ETC concert',
@@ -58,6 +64,10 @@ export class GildedRose {
   updateQuality() {
     for (let i = 0; i < this.items.length; i++) {
       if (this.items[i].name === SPECIFIC_ITEMS.SULFURAS) {
+        const sulfuras = new Sulfuras(this.items[i].name, this.items[i].sellIn, this.items[i].quality);
+        sulfuras.update();
+        this.items[i].quality = sulfuras.quality;
+        this.items[i].sellIn = sulfuras.sellIn;
         continue;
       }
 
