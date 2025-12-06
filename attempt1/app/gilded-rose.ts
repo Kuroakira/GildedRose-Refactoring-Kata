@@ -2,6 +2,8 @@ export class Item {
   name: string;
   sellIn: number;
   quality: number;
+  MAX_QUALITY: number = 50;
+  MIN_QUALITY: number = 0;
 
   constructor(name: string, sellIn: number, quality: number) {
     this.name = name;
@@ -14,14 +16,14 @@ export class Item {
   }
 
   adjustMaxQuality() {
-    if (this.quality > 50) {
-      this.quality = 50;
+    if (this.quality > this.MAX_QUALITY) {
+      this.quality = this.MAX_QUALITY;
     }
   }
 
   adjustMinQuality() {
-    if (this.quality < 0) {
-      this.quality = 0;
+    if (this.quality < this.MIN_QUALITY) {
+      this.quality = this.MIN_QUALITY;
     }
   }
 }

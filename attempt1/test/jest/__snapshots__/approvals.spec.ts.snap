@@ -3,6 +3,8 @@
 exports[`Gilded Rose Approval should foo 1`] = `
 [
   NormalItem {
+    "MAX_QUALITY": 50,
+    "MIN_QUALITY": 0,
     "name": "foo",
     "quality": 0,
     "sellIn": -1,
