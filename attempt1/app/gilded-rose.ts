@@ -82,16 +82,14 @@ class AgedBrie extends Item {
   }
 }
 
-const SPECIFIC_ITEMS = Object.freeze({
-  AGED_BRIE: 'Aged Brie',
-  BACKSTAGE_PASSES: 'Backstage passes to a TAFKAL80ETC concert',
-  SULFURAS: 'Sulfuras, Hand of Ragnaros',
+const SPECIFIC_ITEMS: { [key: string]: typeof Item } = Object.freeze({
+  'Aged Brie': AgedBrie,
+  'Backstage passes to a TAFKAL80ETC concert': BackstagePasses,
+  'Sulfuras, Hand of Ragnaros': Sulfuras,
 });
-
-const SPECIFIC_ITEMS_ARRAY: string[] = Object.values(SPECIFIC_ITEMS);
-
 export class GildedRose {
   items: Array<Item>;
+  private COMMON: typeof Item = NormalItem;
 
   constructor(items = [] as Array<Item>) {
     this.items = items;
@@ -99,39 +97,11 @@ export class GildedRose {
 
   updateQuality() {
     for (let i = 0; i < this.items.length; i++) {
-      if (this.items[i].name === SPECIFIC_ITEMS.SULFURAS) {
-        const sulfuras = new Sulfuras(this.items[i].name, this.items[i].sellIn, this.items[i].quality);
-        sulfuras.update();
-        this.items[i].quality = sulfuras.quality;
-        this.items[i].sellIn = sulfuras.sellIn;
-        continue;
-      }
-
-      if (!SPECIFIC_ITEMS_ARRAY.includes(this.items[i].name)) {
-        // normal item
-        const normalItem = new NormalItem(this.items[i].name, this.items[i].sellIn, this.items[i].quality);
-        normalItem.update();
-        this.items[i].quality = normalItem.quality;
-        this.items[i].sellIn = normalItem.sellIn;
-        continue;
-      }
-
-
-      if (this.items[i].name == SPECIFIC_ITEMS.BACKSTAGE_PASSES) {
-        const backstagePasses = new BackstagePasses(this.items[i].name, this.items[i].sellIn, this.items[i].quality);
-        backstagePasses.update();
-        this.items[i].quality = backstagePasses.quality;
-        this.items[i].sellIn = backstagePasses.sellIn;
-        continue;
-      }
-
-      if (this.items[i].name == SPECIFIC_ITEMS.AGED_BRIE) {
-        const agedBrie = new AgedBrie(this.items[i].name, this.items[i].sellIn, this.items[i].quality);
-        agedBrie.update();
-        this.items[i].quality = agedBrie.quality;
-        this.items[i].sellIn = agedBrie.sellIn;
-        continue;
-      }
+      const Class = SPECIFIC_ITEMS[this.items[i].name] || this.COMMON;
+      const item = new Class(this.items[i].name, this.items[i].sellIn, this.items[i].quality);
+      item.update();
+      this.items[i].quality = item.quality;
+      this.items[i].sellIn = item.sellIn;
     }
 
     return this.items;
