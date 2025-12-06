@@ -34,10 +34,10 @@ export class GildedRose {
       } else {
         this.items[i].quality = this.items[i].quality + 1
         if (this.items[i].name == SPECIFIC_ITEMS.BACKSTAGE_PASSES) {
-          if (this.items[i].sellIn < 11 && this.items[i].quality < 50) {
+          if (this.items[i].sellIn < 11) {
             this.items[i].quality = this.items[i].quality + 1
           }
-          if (this.items[i].sellIn < 6 && this.items[i].quality < 50) {
+          if (this.items[i].sellIn < 6) {
             this.items[i].quality = this.items[i].quality + 1
           }
         }
@@ -46,14 +46,16 @@ export class GildedRose {
       this.items[i].sellIn = this.items[i].sellIn - 1;
 
       if (this.items[i].sellIn < 0) {
-        if (this.items[i].name != SPECIFIC_ITEMS.AGED_BRIE) {
-          if (this.items[i].name != SPECIFIC_ITEMS.BACKSTAGE_PASSES) {
-            this.items[i].quality = this.items[i].quality - 1
-          } else {
-            this.items[i].quality = this.items[i].quality - this.items[i].quality
-          }
-        } else {
-          this.items[i].quality = this.items[i].quality + 1
+        switch (this.items[i].name) {
+          case SPECIFIC_ITEMS.AGED_BRIE:
+            this.items[i].quality = this.items[i].quality + 1;
+            break;
+          case SPECIFIC_ITEMS.BACKSTAGE_PASSES:
+            this.items[i].quality = 0;
+            break;
+          default:
+            this.items[i].quality = this.items[i].quality - 1;
+            break;
         }
       }
 
